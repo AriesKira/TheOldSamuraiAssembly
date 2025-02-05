@@ -1,4 +1,3 @@
-; .model huge
 pile    segment stack
 pile    ends
 
@@ -60,6 +59,8 @@ main_loop:
     je moove_left
     cmp userinput, 77
     je moove_right
+    cmp userinput, 27
+    je fin
 
     jmp draw_image
 
