@@ -1,20 +1,19 @@
-.model huge
+; .model huge
 pile    segment stack
 pile    ends
 
 donnees segment public
 include GFX.inc
-extrn image:byte
+; extrn image:byte
 
-donnees ends
+extrn run1:byte
 
-donnees2 segment public
-extrn image1:byte
-donnees2 ends
-
-code    segment public
 x dw 0  ; Déclaration de la variable x
 y dw 0  ; Déclaration de la variable y
+donnees ends
+
+code    segment public
+
 assume cs:code, ds:donnees, es:code, ss:pile
 
 myprog:         ; debut de la zone instructions
@@ -25,20 +24,20 @@ main:
     mov AX, donnees
     mov DS, AX
     ; Affiche l'image de map 1 
-    mov BX, offset image
+    mov BX, offset run1
+    mov hX, 10
+    mov hY, 10
     call drawIcon
+    mov tempo, 30
     mov DX, 100  ; Position X initiale
     mov x, DX
     mov DX, 100  ; Position Y initiale
     mov y, DX
 
-    mov AX, donnees2
-    mov DS, AX
-    mov BX, offset image1
-    call drawIcon
 
 main_loop:
     call PeekKey
+    call sleep
     cmp userinput, 0
     je main_loop
     
@@ -86,9 +85,7 @@ draw_image:
     mov Hx, ax
     mov ax, y
     mov hY, ax
-    mov AX, donnees2
-    mov DS, AX
-    mov BX, offset image1
+    mov BX, offset run1
     call drawIcon
 
     mov userinput, 0
