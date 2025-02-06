@@ -48,14 +48,14 @@ inputs:
     je move_left
     cmp userinput, 77 ; ARROW RIGHT
     je move_right
-    cmp userinput, 32 ; SPACEBAR
-    je jump
+    ;cmp userinput, 32 ; SPACEBAR
+    ;je jump
 
     mov DX, floor
     cmp y, DX
     jne load_gravity
 
-    ;jmp main
+    jmp main
 
 load_gravity:
     add y, 1
