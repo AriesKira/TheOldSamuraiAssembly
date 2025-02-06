@@ -14,11 +14,16 @@ old_y dw 100
 icon_width dw 32
 icon_height dw 32
 
+player_speed dw 4
+
 floor dw 120
 jump_value dw 0
 jump_velocity dw 40
 is_jump dw 0
 jump_state dw 0
+
+right_limit dw 290
+left_limit dw 0
 
 donnees ends
 
@@ -67,11 +72,21 @@ load_gravity:
     jmp update_image
 
 move_left:
-    sub x, 4
+    mov DX, left_limit
+    cmp x, DX
+    jl main
+
+    mov DX, player_speed
+    sub x, DX
     jmp update_image
 
 move_right:
-    add x, 4
+    mov DX, right_limit
+    cmp x, DX
+    jg main
+
+    mov DX, player_speed
+    add x, DX
     jmp update_image
 
 check_jump:
