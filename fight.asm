@@ -6,13 +6,15 @@ include GFX.inc
 
 extrn run1:byte
 
-x dw 10      ; Position X initiale
-y dw 100     ; Position Y initiale
-old_x dw 10  ; Ancienne position X
-old_y dw 100 ; Ancienne position Y
+x dw 10
+y dw 100
+old_x dw 10
+old_y dw 100
 
-icon_width dw 32  ; Largeur de l'icône (ajuste selon ton image)
-icon_height dw 32 ; Hauteur de l'icône (ajuste selon ton image)
+icon_width dw 32
+icon_height dw 32
+
+floor dw 120
 
 donnees ends
 
@@ -21,11 +23,10 @@ code    segment public
 assume cs:code, ds:donnees, es:code, ss:pile
 
 init:         
-    call Video13h  ; Active le mode vidéo 13h
+    call Video13h
     mov AX, donnees
     mov DS, AX
 
-    ; Dessiner le fond initial
     mov Rx, 0
     mov Ry, 0
     mov Rw, 320
@@ -33,61 +34,59 @@ init:
     mov col, 39
     call fillRect
 
-    call draw_image  ; Dessiner l'image initiale
+    call draw_image
 
 main:
     mov userinput, 0
     call PeekKey
     cmp userinput, 27 ; ESC
-    jne continue
-    jmp fin           ; Utiliser JMP pour éviter l'erreur de saut
+    jne inputs
+    jmp fin
 
-continue:
-    cmp userinput, 72
-    je move_up
-    cmp userinput, 80
-    je move_down
-    cmp userinput, 75
+inputs:
+    cmp userinput, 75 ; ARROW LEFT
     je move_left
-    cmp userinput, 77
+    cmp userinput, 77 ; ARROW RIGHT
     je move_right
+    cmp userinput, 32 ; SPACEBAR
+    je jump
 
-    jmp main
+    mov DX, floor
+    cmp y, DX
+    jne load_gravity
 
-move_up:
-    sub y, 10
-    jmp update_image
+    ;jmp main
 
-move_down:
-    add y, 10
+load_gravity:
+    add y, 1
     jmp update_image
 
 move_left:
-    sub x, 10
+    sub x, 4
     jmp update_image
 
 move_right:
-    add x, 10
+    add x, 4
     jmp update_image
 
-update_image:
-    ; Effacer l'ancienne image en remplissant la zone avec la couleur de fond
-    mov AX, old_x
-    mov Rx, AX       ; Position X de l'ancien sprite
-    mov AX, old_y
-    mov Ry, AX       ; Position Y de l'ancien sprite
-    mov AX, icon_width
-    mov Rw, AX       ; Largeur de l'icône
-    mov AX, icon_height
-    mov Rh, AX       ; Hauteur de l'icône
-    mov col, 39      ; Couleur de fond
-    call fillRect    ; Effacer l'ancienne image
+;jump:
 
-    call draw_image  ; Dessiner l'image à la nouvelle position
+update_image:
+    mov AX, old_x
+    mov Rx, AX
+    mov AX, old_y
+    mov Ry, AX
+    mov AX, icon_width
+    mov Rw, AX
+    mov AX, icon_height
+    mov Rh, AX
+    mov col, 39
+    call fillRect
+
+    call draw_image
     jmp main
 
 draw_image:
-    ; Sauvegarder l'ancienne position
     mov AX, x
     mov old_x, AX
     mov hX, AX
