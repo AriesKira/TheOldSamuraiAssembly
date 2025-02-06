@@ -15,6 +15,10 @@ icon_width dw 32
 icon_height dw 32
 
 floor dw 120
+jump_value dw 0
+jump_velocity dw 40
+is_jump dw 0
+jump_state dw 0
 
 donnees ends
 
@@ -48,13 +52,14 @@ inputs:
     je move_left
     cmp userinput, 77 ; ARROW RIGHT
     je move_right
-    ;cmp userinput, 32 ; SPACEBAR
-    ;je jump
+    cmp userinput, 32 ; SPACEBAR
+    je check_jump
 
     mov DX, floor
     cmp y, DX
     jne load_gravity
 
+    mov is_jump, 0
     jmp main
 
 load_gravity:
@@ -69,7 +74,25 @@ move_right:
     add x, 4
     jmp update_image
 
-;jump:
+check_jump:
+    cmp is_jump, 1
+    je main
+
+    jmp jump
+
+jump:
+    mov is_jump, 1
+    mov jump_state, 1
+    sub y, 1
+    inc jump_value
+
+    mov DX, jump_velocity
+    cmp DX, jump_value
+    jne update_image
+
+    mov jump_state, 0
+    mov jump_value, 0
+    jmp update_image
 
 update_image:
     mov AX, old_x
@@ -84,6 +107,10 @@ update_image:
     call fillRect
 
     call draw_image
+
+    cmp jump_state, 1
+    je jump
+
     jmp main
 
 draw_image:
