@@ -47,7 +47,7 @@ is_shooting dw 0
 shoot_interval dw 300
 
 bullet_active dw 0
-shoot_timer dw 300
+shoot_timer dw 0
 
 bullet_speed dw 3
 bullet_counter dw 0
@@ -195,7 +195,7 @@ reset_game:
     mov enemy_x, 270
     mov enemy_y, 121
     mov bullet_active, 0
-    mov shoot_timer, 300
+    mov shoot_timer, 0
 
     mov hX, 20
     mov hY, 152
@@ -249,7 +249,7 @@ enemy_shoot:
     mov AX, enemy_y
     add AX, 20   ; ↓ Décale le projectile de 10 pixels vers le bas
     mov bullet_y, AX
-    mov shoot_timer, 300  ; Réinitialise le timer après un tir
+    mov shoot_timer, 0
 return_shoot:
     ret
 
